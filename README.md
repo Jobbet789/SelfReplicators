@@ -29,7 +29,7 @@ Requirements:
 pip install numpy
 
 # Clone or download this repository
-git clone <your-repo-url>
+git clone https://github.com/Jobbet789/SelfReplicators
 cd primordial-soup
 ```
 
