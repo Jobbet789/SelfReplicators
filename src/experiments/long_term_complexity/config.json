@@ -1,0 +1,20 @@
+{
+  "grid_height": 128,
+  "grid_width": 128,
+  "initial_density": 0.3,
+  "interaction_radius": 2,
+  "max_program_length": 64,
+  "max_steps_per_execution": 100,
+  "mutation_rate": 0.00024,
+  "mutation_types": [
+    "point",
+    "insertion",
+    "deletion",
+    "duplication"
+  ],
+  "max_epochs": 100000,
+  "executions_per_epoch": 200,
+  "record_interval": 100,
+  "checkpoint_interval": 10000,
+  "min_replicator_length": 4
+}
