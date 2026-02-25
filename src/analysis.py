@@ -5,6 +5,7 @@ Statistical analysis, pattern matching, and evolution tracking.
 
 import numpy as np
 import pickle
+import matplotlib.pyplot as plt
 
 class SequenceAnalyzer:
     """
@@ -250,6 +251,66 @@ def analyze_single_experiment(results: Dict) -> None:
             print("→ Strong replicator dominance in late simulation")
         elif results['final_replicator_count'] > 100:
             print("→ Moderate replicator activity")
+
+    # ────────────────────────────────────────────────────────────────
+    #   VISUALIZATIONS – Metrics over time
+    # ────────────────────────────────────────────────────────────────
+    if 'metrics_history' in results and results['metrics_history']:
+        mh = results['metrics_history']
+        
+        # Prepare time axis (assuming uniform sampling; step ≈ epoch / (n-1))
+        n = len(mh.get('shannon_entropy', []))
+        if n < 2:
+            print("\nNot enough data points for plotting.")
+        else:
+            epochs = np.linspace(0, results['final_epoch'], n)
+            
+            fig, axs = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
+            fig.suptitle("Emergent Replication Dynamics", fontsize=16, y=0.98)
+            
+            # Replicator count
+            if 'replicator_count' in mh and mh['replicator_count']:
+                plt.figure(figsize=(9, 5))
+                plt.plot(epochs, mh['replicator_count'], color='darkgreen', lw=2)
+                plt.title("Replicator Population Growth")
+                plt.xlabel("Epoch")
+                plt.ylabel("Replicator Count")
+                plt.grid(True, alpha=0.3)
+                if results['takeover_detected']:
+                    plt.axvline(results['takeover_epoch'], color='red', ls='--', 
+                              alpha=0.7, label=f"Takeover @ {results['takeover_epoch']}")
+                    plt.legend()
+                plt.savefig("../data/replicators_over_time.png", dpi=140, bbox_inches='tight')
+                plt.close()
+                print("Saved: replicators_over_time.png")
+
+            # Entropies
+            if 'shannon_entropy' in mh or 'high_order_entropy' in mh:
+                plt.figure(figsize=(9, 5))
+                if 'shannon_entropy' in mh:
+                    plt.plot(epochs, mh['shannon_entropy'], label='Shannon', color='blue')
+                if 'high_order_entropy' in mh:
+                    plt.plot(epochs, mh['high_order_entropy'], label='High-Order', color='orange')
+                plt.title("Entropy Evolution")
+                plt.xlabel("Epoch")
+                plt.ylabel("Entropy")
+                plt.grid(True, alpha=0.3)
+                plt.legend()
+                plt.savefig("../data/entropy_evolution.png", dpi=140, bbox_inches='tight')
+                plt.close()
+                print("Saved: entropy_evolution.png")
+
+            # Average code length
+            if 'code_length' in mh and mh['code_length']:
+                plt.figure(figsize=(9, 5))
+                plt.plot(epochs, mh['code_length'], color='purple', lw=2)
+                plt.title("Average Program Length")
+                plt.xlabel("Epoch")
+                plt.ylabel("Avg Length")
+                plt.grid(True, alpha=0.3)
+                plt.savefig("../data/avg_code_length.png", dpi=140, bbox_inches='tight')
+                plt.close()
+                print("Saved: avg_code_length.png")
 
 
 if __name__ == "__main__":
